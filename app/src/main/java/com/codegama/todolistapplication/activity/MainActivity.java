@@ -3,6 +3,7 @@ package com.codegama.todolistapplication.activity;
 import android.content.ComponentName;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -75,6 +76,7 @@ public class MainActivity extends BaseActivity implements CreateTaskBottomSheetF
 
     private void getSavedTasks() {
 
+        @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
         class GetSavedTasks extends AsyncTask<Void, Void, List<Task>> {
             @Override
             protected List<Task> doInBackground(Void... voids) {
@@ -88,14 +90,18 @@ public class MainActivity extends BaseActivity implements CreateTaskBottomSheetF
 
             @Override
             protected void onPostExecute(List<Task> tasks) {
-                super.onPostExecute(tasks);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
+                    super.onPostExecute(tasks);
+                }
                 noDataImage.setVisibility(tasks.isEmpty() ? View.VISIBLE : View.GONE);
                 setUpAdapter();
             }
         }
 
         GetSavedTasks savedTasks = new GetSavedTasks();
-        savedTasks.execute();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
+            savedTasks.execute();
+        }
     }
 
     @Override
